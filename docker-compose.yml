@@ -1,0 +1,28 @@
+version: "3"
+
+services:
+  mongo:
+    image: mongo:4.2
+    container_name: mongo
+    ports:
+      - "27086:27017"
+    restart: unless-stopped
+    networks:
+      - geo-network
+  query-engine:
+    build:
+      context: .
+    image: geo-query-engine
+    container_name: geo-query-engine
+    restart: unless-stopped
+    command: ["bash", "-c", "while true; do sleep 1000; done"]
+    volumes:
+      - ./test_data:/app/test_data
+    networks:
+      - geo-network
+    depends_on:
+      - mongo
+
+networks:
+  geo-network:
+    driver: bridge
