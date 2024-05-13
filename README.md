@@ -2,7 +2,7 @@
 
 This is a simple Python script that queries the region of a given latitude and longitude.
 
-## Preqrequisites
+## Prerequisites
 
 - Docker
 - Docker-compose
