@@ -1,10 +1,10 @@
 # !/usr/bin/python3
 # -*- coding: utf-8 -*-
-# @Project : practice
+# @Project : geo-inverse-query
 # @FileName : extract_ok_geo.py
 # @Author : convexwf@gmail.com
 # @CreateDate : 2024-05-08 18:33
-# @UpdateTime : TODO
+# @UpdateTime : 2024-10-18 22:40
 
 import csv
 import json
@@ -25,6 +25,33 @@ CHOOSE_CITY = {
     "shanghai": "上海市",
     "guangdong": "广东省",
     "zhejiang": "浙江省",
+    "jiangsu": "江苏省",
+    "sichuan": "四川省",
+    "hubei": "湖北省",
+    "henan": "河南省",
+    "hebei": "河北省",
+    "shanxi": "山西省",
+    "shandong": "山东省",
+    "liaoning": "辽宁省",
+    "jilin": "吉林省",
+    "heilongjiang": "黑龙江省",
+    "anhui": "安徽省",
+    "fujian": "福建省",
+    "jiangxi": "江西省",
+    "hunan": "湖南省",
+    "guizhou": "贵州省",
+    "yunnan": "云南省",
+    "hainan": "海南省",
+    "guangxi": "广西壮族自治区",
+    "neimenggu": "内蒙古自治区",
+    "xinjiang": "新疆维吾尔自治区",
+    "xizang": "西藏自治区",
+    "qinghai": "青海省",
+    "gansu": "甘肃省",
+    "ningxia": "宁夏回族自治区",
+    "shannxi": "陕西省",
+    "chongqing": "重庆市",
+    "tianjin": "天津市",
 }
 
 

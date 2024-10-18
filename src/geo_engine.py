@@ -1,10 +1,10 @@
 # !/usr/bin/python3
 # -*- coding: utf-8 -*-
-# @Project : geo-inverse
+# @Project : geo-inverse-query
 # @FileName : geo_engine.py
 # @Author : convexwf@gmail.com
 # @CreateDate : 2024-05-11 14:27
-# @UpdateTime : TODO
+# @UpdateTime : 2024-10-18 22:40
 
 import argparse
 import json
@@ -39,8 +39,7 @@ class CityType(Enum):
 
 
 class CityInfo(Document):
-    __tablename__ = "city_info"
-    city_id = StringField(required=True, primary_key=True)
+    city_id = StringField(required=True, unique=True)
     city_name = StringField(required=True)
     city_type = EnumField(CityType, required=True)
     country_name = StringField()
@@ -51,11 +50,12 @@ class CityInfo(Document):
     city_boundary = MultiPolygonField()
 
     meta = {
+        "collection": "city_info",
         "indexes": [
             {
                 "fields": [("city_type", 1), ("city_boundary", "2dsphere")],
             },
-        ]
+        ],
     }
 
 
@@ -79,6 +79,29 @@ def import_geo_data():
         for city_info in city_info_list:
             CityInfo(**city_info).save()
     print("Geo data imported successfully.")
+
+
+def export_geo_data_to_json():
+    """Export geo data to json files.
+
+    Extract the city information from the MongoDB and save them to the json files.
+
+    """
+    print("Start exporting geo data...")
+    if not os.path.exists(OUTPUT_JSON_DIR):
+        os.makedirs(OUTPUT_JSON_DIR)
+    city_info_list = CityInfo.objects().all()
+
+    export_list = []
+    for city_info in city_info_list:
+        city_info_dict = city_info.to_mongo().to_dict()
+        city_info_dict.pop("_id")
+        export_list.append(city_info_dict)
+    with open(
+        os.path.join(CITY_JSON_DIR, "city_info.json"), "w+", encoding="utf-8"
+    ) as f:
+        json.dump(export_list, f, ensure_ascii=False)
+    print("Geo data exported successfully.")
 
 
 def check_lat_lng(
@@ -163,6 +186,12 @@ def main():
         action="store_true",
         help="Import geo data from json files.",
     )
+    parser.add_argument(
+        "--export_to_json",
+        action="store_false",
+        help="Export geo data to json files.",
+    )
+
     parser.add_argument("--lat", type=float, help="Latitude of the location.")
     parser.add_argument("--lon", type=float, help="Longitude of the location.")
     parser.add_argument("--coords", choices=["wgs84", "gcj02"], default="wgs84")
@@ -175,6 +204,8 @@ def main():
 
     if args.import_geo_data:
         import_geo_data()
+    elif args.export_to_json:
+        export_geo_data_to_json()
     elif args.lat and args.lon:
         city_info = get_city_info_by_lat_lng(args.lat, args.lon, args.coords)
         if len(city_info) == 0:

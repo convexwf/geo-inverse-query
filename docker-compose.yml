@@ -18,6 +18,7 @@ services:
     command: ["bash", "-c", "while true; do sleep 1000; done"]
     volumes:
       - ./test_data:/app/test_data
+      - /tmp/city_info:/app/city_info
     networks:
       - geo-network
     depends_on:
