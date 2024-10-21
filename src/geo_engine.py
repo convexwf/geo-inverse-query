@@ -4,7 +4,7 @@
 # @FileName : geo_engine.py
 # @Author : convexwf@gmail.com
 # @CreateDate : 2024-05-11 14:27
-# @UpdateTime : 2024-10-18 22:40
+# @UpdateTime : 2024-10-21 20:10
 
 import argparse
 import json
@@ -77,7 +77,11 @@ def import_geo_data():
         with open(os.path.join(CITY_JSON_DIR, json_file), "r") as f:
             city_info_list = json.load(f)
         for city_info in city_info_list:
-            CityInfo(**city_info).save()
+            city_info_obj = CityInfo.objects(city_id=city_info.get("city_id")).first()
+            if city_info_obj:
+                city_info_obj.update(**city_info)
+            else:
+                CityInfo(**city_info).save()
     print("Geo data imported successfully.")
 
 
@@ -98,7 +102,7 @@ def export_geo_data_to_json():
         city_info_dict.pop("_id")
         export_list.append(city_info_dict)
     with open(
-        os.path.join(CITY_JSON_DIR, "city_info.json"), "w+", encoding="utf-8"
+        os.path.join(OUTPUT_JSON_DIR, "city_info.json"), "w+", encoding="utf-8"
     ) as f:
         json.dump(export_list, f, ensure_ascii=False)
     print("Geo data exported successfully.")
@@ -188,7 +192,7 @@ def main():
     )
     parser.add_argument(
         "--export_to_json",
-        action="store_false",
+        action="store_true",
         help="Export geo data to json files.",
     )
 

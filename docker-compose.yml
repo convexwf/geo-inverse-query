@@ -3,7 +3,7 @@ version: "3"
 services:
   mongo:
     image: mongo:4.2
-    container_name: mongo
+    container_name: geo-mongo
     ports:
       - "27086:27017"
     restart: unless-stopped
