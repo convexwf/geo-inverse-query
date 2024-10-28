@@ -125,19 +125,22 @@ def extract_mongo_polygon(polygons: str) -> dict:
     return {"type": "MultiPolygon", "coordinates": boundary_list}
 
 
-def extract_city_type(deep: str) -> CityType:
+def extract_city_type(deep: str, city_name: str) -> CityType:
     """Get city type by deep
 
     Args:
         deep (str): 0: 省 1: 市 2: 区 3：镇
+        city_name (str): city name
 
     Returns:
         CityType, e.g CityType.PROVINCE
     """
     if deep == "0":
+        if city_name in ["北京市", "上海市", "天津市", "重庆市"]:
+            return CityType.MUNICIPALITY
         return CityType.PROVINCE
     if deep == "1":
-        return CityType.MUNICIPALITY
+        return CityType.PREFECTURE
     if deep == "2":
         return CityType.COUNTY
     if deep == "3":
@@ -180,7 +183,7 @@ def generate_city_json(lines: list, choose_city: str) -> list:
         city = {
             "city_id": f"{xzqh_id:0<6}",
             "city_name": city_name,
-            "city_type": extract_city_type(deep).value,
+            "city_type": extract_city_type(deep, city_name).value,
             "country_name": "中国",
             "primary_name": primary_name,
             "secondary_name": secondary_name,
